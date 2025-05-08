@@ -30,6 +30,33 @@ module GetblockioApi
       json_rpc('getblockcount')
     end
 
+    # Get best block hash
+    # @return [String] The hash of the best (tip) block in the longest block chain.
+    def get_best_block_hash
+      json_rpc('getbestblockhash')
+    end
+
+    # Get difficulty
+    # @return [Float] The current difficulty.
+    def get_difficulty
+      json_rpc('getdifficulty')
+    end
+
+    # Get block header
+    # @param block_hash [String] The block hash
+    # @param verbose [Boolean] true for a json object, false for the hex-encoded data (default: true)
+    # @return [Hash|String] Block header information or hexadecimal string
+    def get_block_header(block_hash, verbose = true)
+      json_rpc('getblockheader', [block_hash, verbose])
+    end
+
+    # Get chain tips
+    # @return [Array<Hash>] Information about all known chain tips in the block tree.
+    #   Each hash contains: :height, :hash, :branchlen, :status
+    def get_chain_tips
+      json_rpc('getchaintips')
+    end
+
     # Get raw transaction
     # @param txid [String] Transaction ID
     # @param verbose [Boolean] Whether to include detailed information (default: false)

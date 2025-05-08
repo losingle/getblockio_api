@@ -149,6 +149,48 @@ module GetblockioApi
       end
     end
 
+    # Send REST POST request with raw body
+    # @param path [String] API path
+    # @param raw_body [String] Raw request body
+    # @param custom_headers [Hash] Custom headers to merge (e.g., {'Content-Type' => 'application/specific-type'})
+    # @return [Hash, Array] API response
+    def rest_post_raw(path, raw_body, custom_headers = {})
+      raise ArgumentError, "REST API is not supported for this API type" unless @api_type == API_TYPE_REST
+
+      clean_path = path.start_with?('/') ? path[1..-1] : path
+      full_path = "/#{@api_key}/#{clean_path}"
+      log_debug("Requesting REST POST RAW: #{self.class.base_uri}#{full_path}, Headers: #{custom_headers}")
+      
+      if @debug
+        puts "\n[DEBUG] REST POST RAW Request:"
+        puts "URL: #{self.class.base_uri}#{full_path}"
+        puts "Headers: #{custom_headers.inspect}"
+        puts "Body: #{raw_body.inspect}" # Inspect potentially large raw body
+      end
+
+      # Merge default headers with custom headers, custom_headers take precedence
+      request_headers = self.class.headers.merge(custom_headers)
+
+      begin
+        response = self.class.post(full_path, body: raw_body, headers: request_headers)
+        log_debug("Response REST POST RAW: Code=#{response.code}, Body=#{response.body}")
+        
+        if @debug
+          puts "\n[DEBUG] REST POST RAW Response:"
+          puts "Status: #{response.code}"
+          puts "Body: #{response.body}"
+        end
+        
+        handle_http_response(response, is_json_rpc: false)
+      rescue HTTParty::Error, SocketError, Errno::ECONNREFUSED, Net::OpenTimeout, Net::ReadTimeout => e
+        log_error("Network error during REST POST RAW request: #{e.message}")
+        if @debug
+          puts "\n[DEBUG] Network Error: #{e.class} - #{e.message}"
+        end
+        raise NetworkError, "Network error: #{e.message}"
+      end
+    end
+
     # Establish WebSocket connection
     def connect_wss(blockchain_path = '')
       raise ArgumentError, "WebSocket is not supported for this API type" unless @api_type == API_TYPE_WEBSOCKET
