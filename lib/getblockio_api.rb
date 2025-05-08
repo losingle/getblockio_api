@@ -3,19 +3,19 @@ require_relative 'getblockio_api/errors'
 require_relative 'getblockio_api/client'
 require_relative 'getblockio_api/resource'
 
-# 加载所有区块链资源类
+# Load all blockchain resource classes
 require_relative 'getblockio_api/resources/ethereum'
 require_relative 'getblockio_api/resources/solana'
 require_relative 'getblockio_api/resources/aptos'
 require_relative 'getblockio_api/resources/bitcoin'
 
 module GetblockioApi
-  # 创建一个新的客户端
-  # @param api_key [String] API 密钥
-  # @param api_type [String] API 类型（json_rpc, websocket, rest）
-  # @param base_uri [String] API 基础 URI
-  # @param options [Hash] 其他选项
-  # @return [GetblockioApi::Client] 客户端实例
+  # Create a new client
+  # @param api_key [String] API key
+  # @param api_type [String] API type (json_rpc, websocket, rest)
+  # @param base_uri [String] API base URI
+  # @param options [Hash] Other options
+  # @return [GetblockioApi::Client] Client instance
   def self.new(api_key:, api_type: Client::API_TYPE_JSON_RPC, base_uri: nil, options: {})
     Client.new(
       api_key: api_key,
@@ -25,31 +25,31 @@ module GetblockioApi
     )
   end
   
-  # 创建一个以太坊客户端
-  # @param client [GetblockioApi::Client] 客户端实例
-  # @return [GetblockioApi::Ethereum] 以太坊资源
+  # Create an Ethereum client
+  # @param client [GetblockioApi::Client] Client instance
+  # @return [GetblockioApi::Ethereum] Ethereum resource
   def self.ethereum(client)
     Ethereum.new(client)
   end
   
-  # 创建一个比特币客户端
-  # @param client [GetblockioApi::Client] 客户端实例
-  # @return [GetblockioApi::Bitcoin] 比特币资源
+  # Create a Bitcoin client
+  # @param client [GetblockioApi::Client] Client instance
+  # @return [GetblockioApi::Bitcoin] Bitcoin resource
   def self.bitcoin(client)
     Bitcoin.new(client)
   end
   
-  # 创建一个索拉纳客户端
-  # @param client [GetblockioApi::Client] 客户端实例
-  # @return [GetblockioApi::Solana] 索拉纳资源
+  # Create a Solana client
+  # @param client [GetblockioApi::Client] Client instance
+  # @return [GetblockioApi::Solana] Solana resource
   def self.solana(client)
     Solana.new(client)
   end
   
-  # 创建一个 Aptos 客户端
-  # @param client [GetblockioApi::Client] 客户端实例
-  # @param version [String] API 版本 (默认: v1)
-  # @return [GetblockioApi::AptosBase] Aptos 资源
+  # Create an Aptos client
+  # @param client [GetblockioApi::Client] Client instance
+  # @param version [String] API version (default: v1)
+  # @return [GetblockioApi::AptosBase] Aptos resource
   def self.aptos(client, version = Aptos::DEFAULT_VERSION)
     Aptos.new(client, version)
   end

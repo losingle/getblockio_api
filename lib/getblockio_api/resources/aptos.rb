@@ -1,17 +1,17 @@
-# 加载 Aptos 相关资源类
+# Load Aptos related resource classes
 require_relative 'aptos/base'
 require_relative 'aptos/v1/aptos_v1'
 
 module GetblockioApi
-  # Aptos 资源工厂类，用于创建不同版本的 Aptos API 实现
+  # Aptos resource factory class, used to create different versions of Aptos API implementations
   class Aptos
-    # 默认 API 版本
+    # Default API version
     DEFAULT_VERSION = 'v1'.freeze
     
-    # 获取指定版本的 Aptos API 实现
-    # @param client [GetblockioApi::Client] API 客户端实例
-    # @param version [String] API 版本 (默认: v1)
-    # @return [GetblockioApi::AptosBase] Aptos API 实现
+    # Get Aptos API implementation for the specified version
+    # @param client [GetblockioApi::Client] API client instance
+    # @param version [String] API version (default: v1)
+    # @return [GetblockioApi::AptosBase] Aptos API implementation
     def self.new(client, version = DEFAULT_VERSION)
       case version.to_s.downcase
       when 'v1'

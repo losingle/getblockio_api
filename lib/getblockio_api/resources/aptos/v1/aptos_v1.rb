@@ -1,12 +1,12 @@
 module GetblockioApi
-  # Aptos v1 API 资源类
+  # Aptos v1 API Resource class
   class AptosV1 < AptosBase
-    API_VERSION = 'v1'.freeze  # Aptos API 版本号
+    API_VERSION = 'v1'.freeze  # Aptos API version
 
-    # 获取账户资源
-    # @param address [String] 账户地址
-    # @param ledger_version [Integer] 账本版本 (可选)
-    # @return [Array] 资源列表
+    # Get account resources
+    # @param address [String] Account address
+    # @param ledger_version [Integer] Ledger version (optional)
+    # @return [Array] Resource list
     def get_account_resources(address, ledger_version = nil)
       path = build_api_path("accounts/#{address}/resources")
       query = {}
@@ -14,10 +14,10 @@ module GetblockioApi
       rest_get(path, query)
     end
 
-    # 获取账户
-    # @param address [String] 账户地址
-    # @param ledger_version [Integer] 账本版本 (可选)
-    # @return [Hash] 账户信息
+    # Get account
+    # @param address [String] Account address
+    # @param ledger_version [Integer] Ledger version (optional)
+    # @return [Hash] Account information
     def get_account(address, ledger_version = nil)
       path = build_api_path("accounts/#{address}")
       query = {}
@@ -25,19 +25,19 @@ module GetblockioApi
       rest_get(path, query)
     end
 
-    # 获取交易
-    # @param txn_hash [String] 交易哈希
-    # @return [Hash] 交易信息
+    # Get transaction
+    # @param txn_hash [String] Transaction hash
+    # @return [Hash] Transaction information
     def get_transaction(txn_hash)
       path = build_api_path("transactions/by_hash/#{txn_hash}")
       rest_get(path)
     end
 
-    # 获取账户交易
-    # @param address [String] 账户地址
-    # @param limit [Integer] 限制数量 (默认: 25)
-    # @param start [Integer] 起始序号 (可选)
-    # @return [Array] 交易列表
+    # Get account transactions
+    # @param address [String] Account address
+    # @param limit [Integer] Limit count (default: 25)
+    # @param start [Integer] Start sequence number (optional)
+    # @return [Array] Transaction list
     def get_account_transactions(address, limit = 25, start = nil)
       path = build_api_path("accounts/#{address}/transactions")
       query = { limit: limit }
@@ -45,20 +45,20 @@ module GetblockioApi
       rest_get(path, query)
     end
 
-    # 获取区块
-    # @param height [Integer] 区块高度
-    # @param with_transactions [Boolean] 是否包含交易 (默认: false)
-    # @return [Hash] 区块信息
+    # Get block by height
+    # @param height [Integer] Block height
+    # @param with_transactions [Boolean] Whether to include transactions (default: false)
+    # @return [Hash] Block information
     def get_block_by_height(height, with_transactions = false)
       path = build_api_path("blocks/by_height/#{height}")
       query = { with_transactions: with_transactions }
       rest_get(path, query)
     end
 
-    # 获取账户模块
-    # @param address [String] 账户地址
-    # @param ledger_version [Integer] 账本版本 (可选)
-    # @return [Array] 模块列表
+    # Get account modules
+    # @param address [String] Account address
+    # @param ledger_version [Integer] Ledger version (optional)
+    # @return [Array] Module list
     def get_account_modules(address, ledger_version = nil)
       path = build_api_path("accounts/#{address}/modules")
       query = {}
@@ -66,13 +66,13 @@ module GetblockioApi
       rest_get(path, query)
     end
 
-    # 获取账户事件
-    # @param address [String] 账户地址
-    # @param event_handle [String] 事件句柄
-    # @param field_name [String] 字段名
-    # @param limit [Integer] 限制数量 (默认: 25)
-    # @param start [Integer] 起始序号 (可选)
-    # @return [Array] 事件列表
+    # Get account events
+    # @param address [String] Account address
+    # @param event_handle [String] Event handle
+    # @param field_name [String] Field name
+    # @param limit [Integer] Limit count (default: 25)
+    # @param start [Integer] Start sequence number (optional)
+    # @return [Array] Event list
     def get_account_events(address, event_handle, field_name, limit = 25, start = nil)
       path = build_api_path("accounts/#{address}/events/#{event_handle}/#{field_name}")
       query = { limit: limit }
@@ -80,8 +80,8 @@ module GetblockioApi
       rest_get(path, query)
     end
     
-    # 获取 Aptos 信息
-    # @return [Hash] Aptos 节点信息
+    # Get Aptos information
+    # @return [Hash] Aptos node information
     def get_info
       path = build_api_path("info")
       rest_get(path)

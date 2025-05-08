@@ -1,92 +1,92 @@
 module GetblockioApi
-  # 索拉纳 Resource 类
+  # Solana Resource class
   class Solana < Resource
-    BLOCKCHAIN_PATH = ''.freeze  # 索拉纳使用空路径，通过 API 密钥区分
+    BLOCKCHAIN_PATH = ''.freeze  # Solana uses an empty path, differentiated by API key
 
-    # 获取账户信息
-    # @param pubkey [String] 公钥
-    # @param commitment [String] 确认级别 (默认: "finalized")
-    # @return [Hash] 账户信息
+    # Get account information
+    # @param pubkey [String] Public key
+    # @param commitment [String] Commitment level (default: "finalized")
+    # @return [Hash] Account information
     def get_account_info(pubkey, commitment = 'finalized')
       json_rpc('getAccountInfo', [pubkey, { commitment: commitment }])
     end
 
-    # 获取余额
-    # @param pubkey [String] 公钥
-    # @param commitment [String] 确认级别 (默认: "finalized")
-    # @return [Integer] 余额（lamports）
+    # Get balance
+    # @param pubkey [String] Public key
+    # @param commitment [String] Commitment level (default: "finalized")
+    # @return [Integer] Balance (in lamports)
     def get_balance(pubkey, commitment = 'finalized')
       json_rpc('getBalance', [pubkey, { commitment: commitment }])
     end
 
-    # 获取区块
-    # @param slot [Integer] 槽号
-    # @param commitment [String] 确认级别 (默认: "finalized")
-    # @return [Hash] 区块信息
+    # Get block
+    # @param slot [Integer] Slot number
+    # @param commitment [String] Commitment level (default: "finalized")
+    # @return [Hash] Block information
     def get_block(slot, commitment = 'finalized')
       json_rpc('getBlock', [slot, { commitment: commitment }])
     end
 
-    # 获取区块高度
-    # @param commitment [String] 确认级别 (默认: "finalized")
-    # @return [Integer] 区块高度
+    # Get block height
+    # @param commitment [String] Commitment level (default: "finalized")
+    # @return [Integer] Block height
     def get_block_height(commitment = 'finalized')
       json_rpc('getBlockHeight', [{ commitment: commitment }])
     end
 
-    # 获取最新区块哈希
-    # @param commitment [String] 确认级别 (默认: "finalized")
-    # @return [String] 区块哈希
+    # Get latest blockhash
+    # @param commitment [String] Commitment level (default: "finalized")
+    # @return [String] Block hash
     def get_latest_blockhash(commitment = 'finalized')
       json_rpc('getLatestBlockhash', [{ commitment: commitment }])
     end
 
-    # 获取交易
-    # @param signature [String] 交易签名
-    # @param commitment [String] 确认级别 (默认: "finalized")
-    # @return [Hash] 交易信息
+    # Get transaction
+    # @param signature [String] Transaction signature
+    # @param commitment [String] Commitment level (default: "finalized")
+    # @return [Hash] Transaction information
     def get_transaction(signature, commitment = 'finalized')
       json_rpc('getTransaction', [signature, { commitment: commitment }])
     end
 
-    # 发送交易
-    # @param encoded_tx [String] Base64 编码的交易
-    # @param commitment [String] 确认级别 (默认: "finalized")
-    # @return [String] 交易签名
+    # Send transaction
+    # @param encoded_tx [String] Base64 encoded transaction
+    # @param commitment [String] Commitment level (default: "finalized")
+    # @return [String] Transaction signature
     def send_transaction(encoded_tx, commitment = 'finalized')
       json_rpc('sendTransaction', [encoded_tx, { encoding: 'base64', commitment: commitment }])
     end
 
-    # 获取代币账户余额
-    # @param pubkey [String] 代币账户公钥
-    # @param commitment [String] 确认级别 (默认: "finalized")
-    # @return [Hash] 代币余额信息
+    # Get token account balance
+    # @param pubkey [String] Token account public key
+    # @param commitment [String] Commitment level (default: "finalized")
+    # @return [Hash] Token balance information
     def get_token_account_balance(pubkey, commitment = 'finalized')
       json_rpc('getTokenAccountBalance', [pubkey, { commitment: commitment }])
     end
 
-    # 获取程序账户
-    # @param program_id [String] 程序 ID
-    # @param commitment [String] 确认级别 (默认: "finalized")
-    # @return [Array] 程序账户列表
+    # Get program accounts
+    # @param program_id [String] Program ID
+    # @param commitment [String] Commitment level (default: "finalized")
+    # @return [Array] List of program accounts
     def get_program_accounts(program_id, commitment = 'finalized')
       json_rpc('getProgramAccounts', [program_id, { commitment: commitment }])
     end
 
-    # 订阅账户变更
-    # @param pubkey [String] 公钥
-    # @param commitment [String] 确认级别 (默认: "finalized")
-    # @param callback [Block] 处理订阅消息的回调
-    # @return [String] 订阅 ID
+    # Subscribe to account changes
+    # @param pubkey [String] Public key
+    # @param commitment [String] Commitment level (default: "finalized")
+    # @param callback [Block] Callback for handling subscription messages
+    # @return [String] Subscription ID
     def subscribe_account(pubkey, commitment = 'finalized', &callback)
       subscribe('accountSubscribe', [pubkey, { commitment: commitment }], &callback)
     end
 
-    # 订阅程序
-    # @param program_id [String] 程序 ID
-    # @param commitment [String] 确认级别 (默认: "finalized")
-    # @param callback [Block] 处理订阅消息的回调
-    # @return [String] 订阅 ID
+    # Subscribe to program
+    # @param program_id [String] Program ID
+    # @param commitment [String] Commitment level (default: "finalized")
+    # @param callback [Block] Callback for handling subscription messages
+    # @return [String] Subscription ID
     def subscribe_program(program_id, commitment = 'finalized', &callback)
       subscribe('programSubscribe', [program_id, { commitment: commitment }], &callback)
     end

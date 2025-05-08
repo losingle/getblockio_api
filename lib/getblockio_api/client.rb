@@ -71,11 +71,11 @@ module GetblockioApi
       end
     end
 
-    # 发送 HTTP JSON-RPC 请求
-    # @param blockchain_path [String] 区块链路径（如果有）
-    # @param method [String] JSON-RPC 方法名
-    # @param params [Array, Hash] JSON-RPC 参数
-    # @return [Hash] API 响应
+    # Send HTTP JSON-RPC request
+    # @param blockchain_path [String] Blockchain path (if any)
+    # @param method [String] JSON-RPC method name
+    # @param params [Array, Hash] JSON-RPC parameters
+    # @return [Hash] API response
     def json_rpc_post(blockchain_path, method, params = [])
       raise ArgumentError, "JSON-RPC is not supported for this API type" unless @api_type == API_TYPE_JSON_RPC
       
@@ -111,14 +111,14 @@ module GetblockioApi
       end
     end
 
-    # 发送 REST GET 请求 (例如 Aptos)
-    # @param path [String] API 路径
-    # @param query [Hash] 查询参数
-    # @return [Hash, Array] API 响应
+    # Send REST GET request (e.g., Aptos)
+    # @param path [String] API path
+    # @param query [Hash] Query parameters
+    # @return [Hash, Array] API response
     def rest_get(path, query = {})
       raise ArgumentError, "REST API is not supported for this API type" unless @api_type == API_TYPE_REST
       
-      # 确保路径没有前导斜杠，防止双斜杠问题
+      # Ensure path has no leading slash to prevent double slash issues
       clean_path = path.start_with?('/') ? path[1..-1] : path
       full_path = "/#{@api_key}/#{clean_path}"
       log_debug("Requesting REST GET: #{self.class.base_uri}#{full_path}, Query: #{query}")
@@ -149,19 +149,19 @@ module GetblockioApi
       end
     end
 
-    # 建立 WebSocket 连接
+    # Establish WebSocket connection
     def connect_wss(blockchain_path = '')
       raise ArgumentError, "WebSocket is not supported for this API type" unless @api_type == API_TYPE_WEBSOCKET
       
       return if @connected && @current_wss_blockchain_path == blockchain_path
       
-      # 如果已经连接到不同的区块链，先断开连接
+      # If already connected to a different blockchain, disconnect first
       disconnect_wss if @connected
       
       @connecting = true
       @current_wss_blockchain_path = blockchain_path
       
-      # 构建 WebSocket URL
+      # Build WebSocket URL
       wss_url = "#{@base_uri}#{@api_key}/#{blockchain_path}".chomp('/')
       log_debug("Connecting to WebSocket: #{wss_url}")
       
@@ -215,7 +215,7 @@ module GetblockioApi
         end
       end
 
-      # 等待连接建立或超时
+      # Wait for connection to establish or timeout
       timeout = options.fetch(:wss_connect_timeout, 10)
       start_time = Time.now
       while Time.now - start_time < timeout
@@ -232,7 +232,7 @@ module GetblockioApi
       raise WebSocketError, "Connection timeout after #{timeout} seconds"
     end
 
-    # 确保 WebSocket 已连接
+    # Ensure WebSocket is connected
     def ensure_wss_connected(blockchain_path = '')
       @lock.synchronize do
         return true if @connected && @current_wss_blockchain_path == blockchain_path
@@ -240,7 +240,7 @@ module GetblockioApi
       connect_wss(blockchain_path)
     end
 
-    # 发送 WebSocket 请求
+    # Send WebSocket request
     def send_wss_request(blockchain_path, method, params = [])
       ensure_wss_connected(blockchain_path)
 
@@ -255,10 +255,10 @@ module GetblockioApi
       payload = build_json_rpc_payload(method, params, request_id)
       log_debug("Sending WebSocket request: #{payload}")
 
-      # 发送请求
+      # Send request
       @ws.send(payload)
 
-      # 等待响应或超时
+      # Wait for response or timeout
       timeout = options.fetch(:wss_request_timeout, 30)
       begin
         Timeout.timeout(timeout) do
@@ -277,40 +277,40 @@ module GetblockioApi
       end
     end
 
-    # 用于取消 WebSocket 订阅
-    # @param subscription_id [String] 要取消的订阅 ID
-    # @return [Hash] API 响应
+    # For canceling WebSocket subscriptions
+    # @param subscription_id [String] Subscription ID to cancel
+    # @return [Hash] API response
     def unsubscribe_by_id(blockchain_path, subscription_id)
       method = case blockchain_path.split('/').first
-               when 'eth', 'bsc', 'matic', 'arb', 'opti', 'base', 'avax', 'ftm', 'gnosis', 'celo', 'algo', 'sol', 'near', 'aurora', 'tron', 'doge', 'ltc', 'bch', 'zec', 'dash', 'btc', 'ada' # 更多区块链可能需要适配不同的取消订阅方法
-                 'eth_unsubscribe' # 假设通用取消订阅方法
+               when 'eth', 'bsc', 'matic', 'arb', 'opti', 'base', 'avax', 'ftm', 'gnosis', 'celo', 'algo', 'sol', 'near', 'aurora', 'tron', 'doge', 'ltc', 'bch', 'zec', 'dash', 'btc', 'ada' # More blockchains may need different unsubscribe methods
+                 'eth_unsubscribe' # Assume generic unsubscribe method
                else
                  log_warn("Unsubscribe method for blockchain '#{blockchain_path.split('/').first}' is not explicitly defined, using 'eth_unsubscribe'.")
-                 'eth_unsubscribe' # 默认
+                 'eth_unsubscribe' # Default
                end
       send_wss_request(blockchain_path, method, [subscription_id])
     end
 
-    # 关闭 WebSocket 连接
+    # Close WebSocket connection
     def disconnect_wss
       @lock.synchronize do
         return unless @ws && @connected
         log_info("Closing WebSocket connection...")
         @ws.close
-        # 等待 WebSocket 线程结束
+        # Wait for WebSocket thread to finish
       end
 
-      # 等待 EM 循环停止和线程退出
+      # Wait for EM loop to stop and thread to exit
       @ws_thread&.join(options.fetch(:wss_close_timeout, 5))
       log_info("WebSocket connection closed.")
     end
 
-    # 订阅 WebSocket 事件
-    # @param blockchain_path [String] 区块链路径
-    # @param method [String] 订阅方法
-    # @param params [Array] 订阅参数
-    # @param callback [Block] 处理订阅消息的回调
-    # @return [String] 订阅 ID
+    # Subscribe to WebSocket events
+    # @param blockchain_path [String] Blockchain path
+    # @param method [String] Subscription method
+    # @param params [Array] Subscription parameters
+    # @param callback [Block] Callback for handling subscription messages
+    # @return [String] Subscription ID
     def subscribe(blockchain_path, method, params, &callback)
       raise ArgumentError, "Callback block is required for subscription" unless block_given?
       ensure_wss_connected(blockchain_path)
@@ -325,16 +325,16 @@ module GetblockioApi
       subscription_id
     end
 
-    # 取消订阅
-    # @param subscription_id [String] 订阅 ID
-    # @return [Boolean] 是否成功取消订阅
+    # Unsubscribe
+    # @param subscription_id [String] Subscription ID
+    # @return [Boolean] Whether unsubscription was successful
     def unsubscribe(subscription_id)
       @lock.synchronize do
         return false unless @subscriptions.key?(subscription_id)
         @subscriptions.delete(subscription_id)
       end
 
-      # 发送取消订阅请求
+      # Send unsubscribe request
       begin
         unsubscribe_by_id(@current_wss_blockchain_path, subscription_id)
         true
@@ -344,7 +344,7 @@ module GetblockioApi
       end
     end
 
-    # 处理 WebSocket 消息
+    # Handle WebSocket messages
     def handle_wss_message(data)
        begin
          message = JSON.parse(data)
@@ -352,7 +352,7 @@ module GetblockioApi
          subscription_id = message.dig('params', 'subscription')
 
          if request_id && @pending_requests.key?(request_id)
-           # 处理请求响应
+           # Handle request response
            @lock.synchronize do
              queue = @pending_requests.delete(request_id)
              if message['error']
@@ -362,7 +362,7 @@ module GetblockioApi
              end
            end
          elsif subscription_id && @subscriptions.key?(subscription_id)
-           # 处理订阅消息
+           # Handle subscription message
            callback = @subscriptions[subscription_id]
            callback.call(message['params']['result']) if callback
          else
@@ -375,7 +375,7 @@ module GetblockioApi
        end
     end
 
-    # 构建 JSON-RPC 请求负载
+    # Build JSON-RPC request payload
     def build_json_rpc_payload(method, params, id = nil)
       payload = {
         jsonrpc: '2.0',
@@ -386,7 +386,7 @@ module GetblockioApi
       JSON.generate(payload)
     end
 
-    # 处理 HTTP 响应
+    # Handle HTTP response
     def handle_http_response(response, is_json_rpc: true)
       if @debug
         puts "\n[DEBUG] Processing HTTP Response:"
@@ -463,7 +463,7 @@ module GetblockioApi
       end
     end
 
-    # 日志方法
+    # Logging methods
     def log_debug(message)
       @logger&.debug(message)
     end
