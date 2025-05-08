@@ -1,0 +1,98 @@
+# Ruby gem specific
+*.gem
+*.rbc
+/.config
+/coverage/
+/InstalledFiles
+/pkg/
+/spec/reports/
+/spec/examples.txt
+/test/tmp/
+/test/version_tmp/
+/tmp/
+/log/
+
+# Documentation cache and generated files
+/.yardoc/
+/_yardoc/
+/doc/
+/rdoc/
+
+# Environment normalization
+/.bundle/
+/vendor/bundle
+/lib/bundler/man/
+
+# Gemfile.lock for gems
+# Uncomment if you're developing an application rather than a gem
+# Gemfile.lock
+
+# RSpec
+/spec/tmp
+.rspec_status
+
+# Mac specific
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows specific
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
+
+# Linux specific
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# IDE specific
+.idea/
+.vscode/
+*.swp
+*.swo
+.project
+.settings/
+.classpath
+.c9/
+*.launch
+*.sublime-workspace
+*.sublime-project
+
+# Ruby specific
+*.rbc
+capybara-*.html
+.rspec
+/db/*.sqlite3
+/db/*.sqlite3-journal
+/public/system
+/coverage/
+/spec/tmp
+*.orig
+rerun.txt
+pickle-email-*.html
+
+# RVM
+.rvmrc
+.ruby-version
+.ruby-gemset
+
+# Specific project files to ignore
+test.rb

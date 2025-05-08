@@ -1,0 +1,10 @@
+{
+  "jsonrpc": "2.0",
+  "id": "getblock.io",
+  "result": {
+    "context": {
+      "slot": 171968590
+    },
+    "value": 1000000000
+  }
+}

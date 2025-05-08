@@ -1,0 +1,18 @@
+{
+  "jsonrpc": "2.0",
+  "id": "getblock.io",
+  "result": {
+    "chain": "main",
+    "blocks": 788000,
+    "headers": 788000,
+    "bestblockhash": "00000000000000000002a7c4c1e48d76c5a37902165a270156b7a8d72728a054",
+    "difficulty": 53911173001054.59,
+    "mediantime": 1682521611,
+    "verificationprogress": 0.9999997486272058,
+    "initialblockdownload": false,
+    "chainwork": "00000000000000000000000000000000000000002a36f8a8c1e0f9dc5e827e2d",
+    "size_on_disk": 491728829884,
+    "pruned": false,
+    "warnings": ""
+  }
+}
